@@ -1,102 +1,72 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
+async function init() {
+    try {
+        const userInputs = await inquirer.promt;
 
-function writeHTML( {name, location, bio, linkedInUser, gitHubUser} ) {
-    const htmlString = `<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="./styles.css">
-            <title>My Portfolio</title>
-        </head>
-        <body>
-            <header >
-                <h1>
-                    ${name}
-                </h1>
-            </header>
-            <main>
-                <div>
-                    <h2>
-                        Bio:
-                    </h2>
-                    <p>
-                        ${bio}
-                    </p>
-                </div>
-            </main>
-            <footer >
-                <div>
-                    ${location}
-                </div>
-                <div>
-                    <a href="https://www.linkedin.com/in/${linkedInUser}">LinkedIn</a>
-                </div>
-                <div>
-                    <a href="https://www.github.com/${gitHubUser}">GitHub</a>
-                </div>
-            </footer>
-        </body>
-        </html>`
-    return htmlString
-}
+        const readIt = generateReadMe(inputs);
 
-function writeHTMLFile(htmlString) {
-    fs.writeFile('index.html', htmlString, (err) => {
-        if (err) {
-            console.error(err)
-        } else {
-            console.log('Success: HTML File Generated!')
+        await writeFileAsync('Readme.md', readIt);
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+inquirer
+    .prompt([
+        {
+            type: 'input',
+            message: 'What is the name of the project?',
+            name: 'title',
+        },
+        {
+            type: 'input',
+            message: 'What is the description of the project',
+            name: 'description',
+        },
+        {
+            type: 'input',
+            message: 'Info for installation?',
+            name: 'install',
+        },
+        {
+            type: 'input',
+            message: 'Usage Information?',
+            name: 'use',
+        },
+        {
+            type: 'input',
+            message: 'Test instructions?',
+            name: 'test',
+        },
+        {
+            type: 'input',
+            message: 'License information?',
+            name: 'license',
+        },
+        {
+            type: 'input',
+            message: 'What is your github user name?',
+            name: 'gitname',
+        },
+        {
+            type: 'input',
+            message: 'where is your project deployed',
+            name: 'deploy',
         }
-    })
-}
+    ])
 
-function main() {
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                message: 'What is your name?',
-                name: 'name',
-            },
-            {
-                type: 'input',
-                message: 'What is your current location?',
-                name: 'location',
-            },
-            {
-                type: 'input',
-                message: 'Tell us about yourself.',
-                name: 'bio',
-            },
-            {
-                type: 'input',
-                message: 'What is your LinkedIn username?',
-                name: 'linkedInUser',
-            },
-            {
-                type: 'input',
-                message: 'What is your Github username?',
-                name: 'gitHubUser',
-            },
-        ])
-        .then((response) => {
-            const prompt = {
-                name: response.name,
-                location: response.location,
-                bio: response.bio,
-                linkedInUser: response.linkedInUser,
-                gitHubUser: response.gitHubUser
-            }
+    .then((response) => {
+        const prompt = {
+            name: response.username,
+            location: response.location,
+            bio: response.bio,
+            linkUserName: response.linkUserName,
+            gitUserName: response.gitUserName,
+        }
+        console.log(prompt);
+    });
 
-            const html = writeHTML(prompt);
-
-            writeHTMLFile(html);
-
-        });
-}
-
-main();
+init();
